@@ -1,42 +1,63 @@
 # Jerusalem Weather MCP
 
-A local MCP server that provides 7-day weather forecasts for Jerusalem using the Open-Meteo API. Built with Python and designed to integrate with VS Code Copilot.
+A local MCP server that provides seven-day weather forecasts for Jerusalem using the [Open-Meteo API](https://open-meteo.com/). It is built with Python and can be used with VS Code Copilot. No API key is required.
 
-שרת MCP מקומי שמספק כלי לתחזית מזג האוויר בירושלים לשבעת הימים הקרובים. הנתונים מתקבלים מ־[Open-Meteo](https://open-meteo.com/) ללא מפתח API. הטמפרטורות במעלות צלזיוס, מהירות הרוח בקמ״ש, והשעות לפי אזור הזמן של ירושלים.
+The forecast includes daily conditions in Hebrew, minimum and maximum temperatures in Celsius, maximum precipitation probability, maximum wind speed in km/h, and sunrise and sunset times in Jerusalem local time.
 
-## דרישות
+## Requirements
 
-- Python 3.10 ומעלה
-- חיבור לאינטרנט בזמן בקשת התחזית
+- Python 3.10 or later
+- An internet connection when requesting a forecast
+- VS Code with GitHub Copilot, if you want to use the included MCP configuration
 
-## התקנה והרצה
+## Install
 
-פתחו טרמינל PowerShell בתיקיית הפרויקט, והריצו את הפקודות הבאות:
+Open PowerShell in the project directory and create a virtual environment:
 
 ```powershell
-& "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe" -m venv .venv
+py -3 -m venv .venv
+```
+
+Install the project and its dependencies:
+
+```powershell
 & ".\.venv\Scripts\python.exe" -m pip install -e .
 ```
 
-אם Python מותקן במיקום אחר, החליפו את הנתיב לפייתון המותקן אצלכם. לאחר ההתקנה, אפשר להריץ ידנית:
+If the `py` command is unavailable, create the virtual environment with your Python executable instead:
+
+```powershell
+python -m venv .venv
+```
+
+## Run with VS Code
+
+The project includes an MCP configuration at `.vscode/mcp.json`. Open the project folder in VS Code, then:
+
+1. Press `Ctrl+Shift+P`.
+2. Run **MCP: List Servers**.
+3. Select **jerusalem-weather**, then choose **Start Server**.
+4. In Copilot Chat, select **Agent** mode and ask it to use `jerusalem_weekly_forecast`.
+
+The MCP server runs locally over `stdio`. VS Code starts it when needed; you do not need to start a separate HTTP server.
+
+## Run manually
+
+To start the MCP server from PowerShell:
 
 ```powershell
 & ".\.venv\Scripts\python.exe" -m jerusalem_weather_mcp
 ```
 
-השרת משתמש בתעבורת `stdio` ומיועד להפעלה על ידי לקוח MCP, למשל VS Code. כשהוא מופעל ידנית הוא ימתין בשקט לבקשות MCP.
+The server waits for requests from an MCP client.
 
-## חיבור ל־VS Code
+## MCP tool
 
-קובץ `.vscode/mcp.json` כבר מצורף לפרויקט ומשתמש בסביבת `.venv` שנוצרה בפקודות ההתקנה למעלה. פתחו את תיקיית `weather_forecast` ב־VS Code. לחצו `Ctrl+Shift+P`, חפשו `MCP: List Servers`, בחרו `jerusalem-weather` ואז `Start Server`. בכלי הצ'אט אפשר לבקש להפעיל את `jerusalem_weekly_forecast`.
+`jerusalem_weekly_forecast` returns the next seven days of weather for Jerusalem, including the location, timezone, data source, and daily forecast details.
 
-חשוב לפתוח ב־VS Code את תיקיית הפרויקט עצמה, כדי שנתיב `${workspaceFolder}` יפנה למקום הנכון.
+## Tests
 
-## הכלי
-
-`jerusalem_weekly_forecast` מחזיר אובייקט עם פרטי מיקום, אזור זמן, מקור הנתונים ורשימה של שבע תחזיות יומיות. כל יום כולל תיאור בעברית, קוד מזג אוויר, טמפרטורות מינימום ומקסימום, סיכוי מרבי למשקעים, מהירות רוח מרבית וזריחה/שקיעה.
-
-## בדיקות
+Run the test suite with:
 
 ```powershell
 & ".\.venv\Scripts\python.exe" -m unittest discover -s tests
